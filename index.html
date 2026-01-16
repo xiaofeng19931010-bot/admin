@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manta-admin - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        manta: {
+                            primary: '#2E9F58',
+                            dark: '#1A6E3B',
+                            light: '#F4F7F9',
+                            text: '#333333',
+                            border: '#E5E7EB',
+                            error: '#EF4444'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom pattern for the left side to mimic the "tech" look */
+        .tech-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        
+        /* Right side background pattern */
+        .bg-grid-slate {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, #f1f5f9 1px, transparent 1px),
+                              linear-gradient(to bottom, #f1f5f9 1px, transparent 1px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+    </style>
+</head>
+<body class="bg-white h-screen flex overflow-hidden">
+
+    <!-- Left Side: Graphic Area -->
+    <div class="hidden lg:flex lg:w-1/2 bg-manta-primary relative flex-col justify-center px-12 xl:px-24 overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 tech-pattern opacity-30"></div>
+        
+        <!-- Decorative Cube/Graphic (CSS representation) -->
+        <div class="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-1/4 opacity-20">
+             <i class="fas fa-cube text-[400px] text-white"></i>
+        </div>
+
+        <!-- Content -->
+        <div class="relative z-10 mb-20">
+            <h1 class="text-6xl font-bold text-white leading-tight">
+                Hello<br>
+                MANTA
+            </h1>
+        </div>
+        
+        <!-- Decorative rounded edge on the right is achieved by the white background of the right side, 
+             but if we want the green to have a rounded corner overlaying a background, 
+             we can add a pseudo-element or just keep it split. 
+             The design looks like the green shape has a rounded border-radius on the right.
+        -->
+        <div class="absolute top-0 right-0 bottom-0 w-16 bg-white rounded-l-[4rem] transform translate-x-8 hidden"></div>
+    </div>
+
+    <!-- Right Side: Login Form -->
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50 bg-grid-slate relative">
+        <!-- Decorative blur effect -->
+        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 rounded-full bg-manta-primary/5 blur-3xl pointer-events-none"></div>
+        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-blue-500/5 blur-3xl pointer-events-none"></div>
+
+        <div class="w-full max-w-md bg-white p-10 rounded-2xl shadow-xl border border-gray-100 animate-fade-in-up relative z-10">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-manta-primary/10 text-manta-primary mb-4 transform transition-transform hover:scale-110 duration-300">
+                    <i class="fas fa-user-shield text-xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900 tracking-tight">Manta-admin</h2>
+                <p class="text-gray-500 mt-3 text-sm">Welcome back! Please login to access the dashboard.</p>
+            </div>
+
+            <form id="login-form" onsubmit="handleLogin(event)" class="space-y-8" novalidate>
+                <!-- Submit Button -->
+                <div class="space-y-6">
+                    <button type="submit" class="w-full bg-manta-primary text-white py-3.5 rounded-xl hover:bg-manta-dark hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 font-semibold text-base shadow-md flex items-center justify-center group">
+                        <i class="fas fa-globe mr-2 text-lg group-hover:rotate-12 transition-transform"></i>
+                        <span>Lark SSO Login</span>
+                    </button>
+                    
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-200"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-400 text-xs">Protected by Manta Security</span>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Footer Info -->
+        <div class="absolute bottom-6 text-center w-full text-xs text-gray-400">
+            &copy; 2024 Manta Systems. All rights reserved.
+        </div>
+    </div>
+
+    <script>
+        function handleLogin(e) {
+            e.preventDefault();
+            
+            const btn = e.target.querySelector('button');
+            const originalContent = btn.innerHTML;
+            
+            // Step 1: Redirecting to Lark
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Redirecting to Lark...';
+            btn.disabled = true;
+            btn.classList.add('opacity-75');
+
+            setTimeout(() => {
+                // Step 2: Simulating Lark Authentication
+                btn.innerHTML = '<i class="fas fa-check-circle"></i> Authenticating...';
+                
+                setTimeout(() => {
+                    // Step 3: Success and Redirect
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

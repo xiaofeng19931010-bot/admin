@@ -1,0 +1,12 @@
+{
+  "name": "manta-admin",
+  "version": "1.0.0",
+  "description": "Manta Admin Dashboard",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8080"
+  },
+  "keywords": ["admin", "dashboard", "manta"],
+  "author": "",
+  "license": "ISC"
+}
