@@ -434,35 +434,16 @@ function renderDataAccessDashboard() {
     
     filteredNodes.forEach(node => {
         const isOnline = node.status === 'online';
-        const vendorName = node.type === 'MANTA' ? 'OSW' : (node.vendor || 'Unknown');
-        let iconName = 'fa-cloud';
-        const vLower = vendorName.toLowerCase();
-        if (vLower.includes('osw')) iconName = 'fa-server';
-        else if (vLower.includes('sungrow')) iconName = 'fa-sun';
-        else if (vLower.includes('huawei')) iconName = 'fa-cube';
-        else if (vLower.includes('tesla')) iconName = 'fa-bolt';
-        else if (vLower.includes('byd')) iconName = 'fa-battery-full';
-        else if (vLower.includes('catl')) iconName = 'fa-battery-charging';
-
+        const nodeTitle = `${node.vendor || 'Unknown'} ${node.type || ''}`.trim();
         const card = document.createElement('div');
         card.className = 'bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:border-manta-primary transition-colors group relative overflow-hidden cursor-pointer';
         card.onclick = () => renderDataAccessDetails(node.id);
         
         card.innerHTML = `
-            <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none text-gray-900">
-                <i class="fas ${iconName.replace('fa-', '')} text-9xl"></i>
-            </div>
-            
             <div class="flex justify-between items-start mb-4 relative z-10 pointer-events-none">
                 <div class="flex items-center gap-3">
-                    <div class="flex flex-col items-center gap-1 min-w-[3.5rem]">
-                        <div class="p-2.5 rounded-lg ${node.type === 'MANTA' ? 'bg-green-50 text-manta-primary' : 'bg-purple-50 text-purple-600'}">
-                            <i class="fas ${iconName}"></i>
-                        </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider text-gray-500">${vendorName}</span>
-                    </div>
                     <div class="flex-1 min-w-0">
-                        <h3 class="font-semibold text-lg text-gray-900 leading-tight truncate" title="${node.name}">${node.name}</h3>
+                        <h3 class="font-semibold text-lg text-gray-900 leading-tight truncate" title="${nodeTitle}">${nodeTitle}</h3>
                         <div class="flex items-center gap-2 mt-1">
                              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200">
                                 <i class="fas fa-globe text-gray-400 text-[10px]"></i> ${node.country || 'Unknown'}
@@ -558,9 +539,8 @@ function renderDataAccessDetails(nodeId) {
             <i class="fas fa-arrow-left text-xl"></i>
         </button>
         <div>
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight flex items-center gap-3">
-                ${node.name}
-                <span class="text-xs px-2 py-0.5 rounded border border-gray-200 text-gray-500 font-normal">${node.type}</span>
+            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">
+                ${(node.vendor || 'Unknown') + ' ' + (node.type || '')}
             </h1>
         </div>
     `;
