@@ -367,7 +367,7 @@ function showError(elementId, message) {
 const dataAccessState = {
     currentView: 'dashboard',
     dashboardFilter: 'ALL',
-    detailsTab: 'Company',
+    detailsTab: 'Companies',
     detailsSearchQuery: '',
     selectedNodeId: null
 };
@@ -453,49 +453,42 @@ function renderDataAccessDashboard() {
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4 mt-6 relative z-10 pointer-events-none">
-                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                    <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-gray-500">Inverters</p>
-                        <span class="text-xs font-mono text-gray-700 bg-white px-1.5 py-0.5 rounded border border-gray-200">${node.inverters}</span>
+            <div class="flex flex-col gap-2 text-xs mt-auto relative z-10 pointer-events-none">
+                <!-- Group 1: Device Status -->
+                <div class="bg-gray-50 rounded-lg p-2 border border-gray-200 grid grid-cols-3 gap-2 group-hover:border-gray-300 transition-colors">
+                    <!-- DERs Total -->
+                    <div class="flex flex-col items-center justify-center gap-1 text-center">
+                        <span class="text-gray-500 text-[10px] scale-90">DERs</span>
+                        <span class="font-mono font-medium text-gray-900">${(node.inverters || 0) + (node.batteries || 0)}</span>
                     </div>
-                    <div class="space-y-1 pt-1 border-t border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-1.5">
-                                <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                                <span class="text-gray-500 text-[10px]">Online</span>
-                            </div>
-                            <span class="text-gray-700 font-mono text-[10px]">${node.invertersOnline}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-1.5">
-                                <div class="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
-                                <span class="text-gray-500 text-[10px]">Offline</span>
-                            </div>
-                            <span class="text-gray-700 font-mono text-[10px]">${node.invertersOffline}</span>
-                        </div>
+                    <!-- Online -->
+                    <div class="flex flex-col items-center justify-center gap-1 text-center border-l border-gray-200">
+                        <span class="text-gray-500 text-[10px] scale-90">Online</span>
+                        <span class="font-mono font-medium text-green-600">${(node.invertersOnline || 0) + (node.batteriesOnline || 0)}</span>
+                    </div>
+                    <!-- Offline -->
+                    <div class="flex flex-col items-center justify-center gap-1 text-center border-l border-gray-200">
+                        <span class="text-gray-500 text-[10px] scale-90">Offline</span>
+                        <span class="font-mono font-medium text-gray-400">${(node.invertersOffline || 0) + (node.batteriesOffline || 0)}</span>
                     </div>
                 </div>
-                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                    <div class="flex justify-between items-start mb-2">
-                        <p class="text-xs text-gray-500">Batteries</p>
-                        <span class="text-xs font-mono text-gray-700 bg-white px-1.5 py-0.5 rounded border border-gray-200">${node.batteries}</span>
+
+                <!-- Group 2: Energy Stats -->
+                <div class="bg-gray-50 rounded-lg p-2 border border-gray-200 grid grid-cols-3 gap-2 group-hover:border-gray-300 transition-colors">
+                    <!-- Inv Power -->
+                    <div class="flex flex-col items-center justify-center gap-1 text-center">
+                        <span class="text-gray-500 text-[10px] scale-90">Rated Power</span>
+                        <span class="font-mono font-medium text-gray-900">${((node.inverters || 0) * 5 + (node.batteries || 0) * 3)} kW</span>
                     </div>
-                     <div class="space-y-1 pt-1 border-t border-gray-200">
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-1.5">
-                                <div class="w-1.5 h-1.5 rounded-full bg-green-500"></div>
-                                <span class="text-gray-500 text-[10px]">Online</span>
-                            </div>
-                            <span class="text-gray-700 font-mono text-[10px]">${node.batteriesOnline}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <div class="flex items-center gap-1.5">
-                                <div class="w-1.5 h-1.5 rounded-full bg-gray-400"></div>
-                                <span class="text-gray-500 text-[10px]">Offline</span>
-                            </div>
-                            <span class="text-gray-700 font-mono text-[10px]">${node.batteriesOffline}</span>
-                        </div>
+                    <!-- PV Capacity -->
+                    <div class="flex flex-col items-center justify-center gap-1 text-center border-l border-gray-200">
+                        <span class="text-gray-500 text-[10px] scale-90">PV Capacity</span>
+                        <span class="font-mono font-medium text-gray-900">${(node.inverters || 0) * 6.5} kW</span>
+                    </div>
+                    <!-- SOC -->
+                    <div class="flex flex-col items-center justify-center gap-1 text-center border-l border-gray-200">
+                        <span class="text-gray-500 text-[10px] scale-90">SOC</span>
+                        <span class="font-mono font-medium text-gray-900 text-[10px]">${node.batteries > 0 ? '85%' : '-'}</span>
                     </div>
                 </div>
             </div>
@@ -586,16 +579,17 @@ function renderDataAccessDetails(nodeId) {
     mainPanel.className = 'space-y-6';
 
     const DEVICE_LIST = {
-        'Inverters': generateDevices('Inverter', node.inverters || 2, node),
-        'Batteries': generateDevices('Battery', node.batteries || 2, node)
+        'DERs': [
+            ...generateDevices('Inverter', node.inverters || 2, node),
+            ...generateDevices('Battery', node.batteries || 2, node)
+        ]
     };
     
     const currentList = (DEVICE_LIST[dataAccessState.detailsTab] || []).filter(dev => {
         if (!dataAccessState.detailsSearchQuery) return true;
         const q = dataAccessState.detailsSearchQuery.toLowerCase();
         return (dev.sn && dev.sn.toLowerCase().includes(q)) ||
-               (dev.model && dev.model.toLowerCase().includes(q)) ||
-               (dev.userName && dev.userName.toLowerCase().includes(q));
+               (dev.nodeName && dev.nodeName.toLowerCase().includes(q));
     });
 
     const headers = [];
@@ -603,9 +597,8 @@ function renderDataAccessDetails(nodeId) {
     mainPanel.innerHTML = `
         <div class="flex justify-between items-end border-b border-gray-200 pb-1">
             <div class="flex gap-4">
-                <button onclick="setDetailsTab('Company', ${nodeId})" class="px-4 py-2 transition-colors ${dataAccessState.detailsTab === 'Company' ? 'text-manta-primary border-b-2 border-manta-primary font-medium' : 'text-gray-500 hover:text-gray-900'}">Company</button>
-                <button onclick="setDetailsTab('Inverters', ${nodeId})" class="px-4 py-2 transition-colors ${dataAccessState.detailsTab === 'Inverters' ? 'text-manta-primary border-b-2 border-manta-primary font-medium' : 'text-gray-500 hover:text-gray-900'}">Inverters</button>
-                <button onclick="setDetailsTab('Batteries', ${nodeId})" class="px-4 py-2 transition-colors ${dataAccessState.detailsTab === 'Batteries' ? 'text-manta-primary border-b-2 border-manta-primary font-medium' : 'text-gray-500 hover:text-gray-900'}">Batteries</button>
+                <button onclick="setDetailsTab('Companies', ${nodeId})" class="px-4 py-2 transition-colors ${dataAccessState.detailsTab === 'Companies' ? 'text-manta-primary border-b-2 border-manta-primary font-medium' : 'text-gray-500 hover:text-gray-900'}">Companies</button>
+                <button onclick="setDetailsTab('DERs', ${nodeId})" class="px-4 py-2 transition-colors ${dataAccessState.detailsTab === 'DERs' ? 'text-manta-primary border-b-2 border-manta-primary font-medium' : 'text-gray-500 hover:text-gray-900'}">DERs</button>
             </div>
             <div class="flex items-center gap-2 mb-2">
                 <div class="relative">
@@ -618,7 +611,7 @@ function renderDataAccessDetails(nodeId) {
                         class="bg-white border border-gray-200 rounded-lg pl-9 pr-4 py-1.5 text-sm text-gray-900 focus:outline-none focus:border-manta-primary/50 w-64 transition-colors placeholder-gray-400"
                     >
                 </div>
-                ${dataAccessState.detailsTab === 'Company' ? `
+                ${dataAccessState.detailsTab === 'Companies' ? `
                 <button onclick="openAddCompanyDrawer(${nodeId})" class="px-3 py-1.5 bg-manta-primary text-white text-sm rounded-lg hover:bg-manta-dark transition-colors shadow-sm flex items-center gap-2">
                      <i class="fas fa-plus"></i> Add
                 </button>` : ''}
@@ -628,7 +621,7 @@ function renderDataAccessDetails(nodeId) {
         <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
 
              <div class="overflow-x-auto">
-                ${dataAccessState.detailsTab === 'Company' ? renderCompanyTable(node, dataAccessState.detailsSearchQuery) : renderDeviceTable(currentList, headers)}
+                ${dataAccessState.detailsTab === 'Companies' ? renderCompanyTable(node, dataAccessState.detailsSearchQuery) : renderDeviceTable(currentList, headers)}
              </div>
         </div>
     `;
@@ -702,36 +695,34 @@ function renderDeviceTable(list, headers) {
             <thead class="bg-gray-100 text-gray-700 font-bold text-xs">
                 <tr>
                     <th class="px-6 py-3 whitespace-nowrap">SN</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Model</th>
+                    <th class="px-6 py-3 whitespace-nowrap">Manufacturer</th>
                     <th class="px-6 py-3 whitespace-nowrap">Status</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Owner</th>
-                    <th class="px-6 py-3 whitespace-nowrap">VPP</th>
-                    <th class="px-6 py-3 whitespace-nowrap">NMI</th>
-                    <th class="px-6 py-3 whitespace-nowrap">DNSP</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Retailer</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Company</th>
-                    ${headers.map(h => `<th class="px-6 py-3 whitespace-nowrap text-right">${h}</th>`).join('')}
+                    <th class="px-6 py-3 whitespace-nowrap">Rated Power</th>
+                    <th class="px-6 py-3 whitespace-nowrap">PV Capacity</th>
+                    <th class="px-6 py-3 whitespace-nowrap">SOC</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
                 ${list.map(dev => `
                 <tr class="hover:bg-gray-50 transition-colors border-b border-gray-50">
                     <td class="px-6 py-4 font-medium text-gray-900 font-mono">${dev.sn}</td>
-                    <td class="px-6 py-4 whitespace-nowrap">${dev.model}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-500">${dev.nodeName}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 py-1 text-xs font-semibold rounded-full ${dev.status === 'online' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
-                            ${dev.status === 'online' ? 'Online' : 'Offline'}
+                        <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs ${dev.status === 'online' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
+                            <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                            ${dev.status === 'online' ? 'online' : 'offline'}
                         </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">${dev.userName}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-500">${dev.vpp}</td>
-                    <td class="px-6 py-4 font-mono text-xs text-gray-500 whitespace-nowrap">${dev.nmi}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-500">${dev.dnsp}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-500">${dev.retailer}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-500">${dev.company || '-'}</td>
-                    ${headers.map(h => `
-                        <td class="px-6 py-4 text-right font-mono text-manta-primary whitespace-nowrap ${h === 'Power' ? 'font-bold' : ''}">${dev.data[h]}</td>
-                    `).join('')}
+                    <td class="px-6 py-4 whitespace-nowrap font-mono text-gray-500">${dev.ratedPower}</td>
+                    <td class="px-6 py-4 whitespace-nowrap font-mono text-gray-500">${dev.pvCapacity}</td>
+                    <td class="px-6 py-4 whitespace-nowrap font-mono text-gray-500">
+                        ${dev.soc ? `
+                        <div>
+                            <div class="text-gray-900">${dev.soc.pct}%</div>
+                            <div class="text-[10px] text-gray-500">${dev.soc.text}</div>
+                        </div>
+                        ` : '-'}
+                    </td>
                 </tr>
                 `).join('')}
             </tbody>
@@ -741,21 +732,26 @@ function renderDeviceTable(list, headers) {
 
 function generateDevices(type, count, node) {
     // Generate mock devices for display
-    const mocks = Array.from({length: count}, (_, i) => ({
-        sn: `${type === 'Inverter' ? 'INV' : 'BAT'}-${String(i+1).padStart(3, '0')}`,
-        model: type === 'Inverter' ? 'SG-5K-D' : 'LFP-10K',
-        status: Math.random() > 0.1 ? 'online' : 'offline',
-        capacity: type === 'Inverter' ? 50 : 200,
-        userName: `User ${i+1}`,
-        vpp: ['VPP-A', 'VPP-B', 'VPP-C'][Math.floor(Math.random() * 3)],
-        nmi: Math.floor(4000000000 + Math.random() * 9000000000),
-        dnsp: ['Ausgrid', 'Endeavour', 'Ergon'][Math.floor(Math.random() * 3)],
-        retailer: ['Origin', 'AGL', 'EnergyAust'][Math.floor(Math.random() * 3)],
-        company: ['Solar Naturally Pty Ltd', 'GPOWER PTY LTD', 'Connect Solar Cycle Team', 'Blue Sky Solar'][Math.floor(Math.random() * 4)],
-        data: type === 'Inverter' ? 
-            { Voltage: (220 + Math.random()*5).toFixed(1) + ' V', Current: (10 + Math.random()*10).toFixed(1) + ' A', Frequency: '50.02 Hz', Temp: (30 + Math.random()*15).toFixed(0) + ' °C', Power: (3 + Math.random()*2).toFixed(1) + ' kW' } :
-            { Voltage: '51.2 V', Current: (20 + Math.random()*30).toFixed(1) + ' A', SOC: Math.floor(60 + Math.random()*40) + '%', Temp: (25 + Math.random()*10).toFixed(0) + ' °C', Power: (1 + Math.random()*2).toFixed(1) + ' kW' }
-    }));
+    const mocks = Array.from({length: count}, (_, i) => {
+        const capacity = type === 'Inverter' ? 50 : 13.5; // kW
+        const pvCapacity = type === 'Inverter' ? (capacity * 1.2) : 0;
+        const soc = Math.floor(20 + Math.random() * 80);
+        const totalEnergy = 14; // kWh for battery
+        const currentEnergy = Math.round(totalEnergy * soc / 100);
+        
+        return {
+            sn: `${type === 'Inverter' ? 'INV' : 'BAT'}-2024${String(i+1).padStart(3, '0')}`,
+            nodeName: node.name || 'Industrial Park Zone 1',
+            status: Math.random() > 0.1 ? 'online' : 'offline',
+            ratedPower: `${capacity.toFixed(1)} kW`,
+            pvCapacity: type === 'Inverter' ? `${pvCapacity.toFixed(1)} kW` : '-',
+            soc: type === 'Battery' ? { pct: soc, text: `(${currentEnergy}/${totalEnergy} kWh)` } : null,
+            todayYield: `${(Math.random() * 100 + 50).toFixed(1)} kWh`,
+            model: type === 'Inverter' ? 'SG-5K-D' : 'LFP-10K',
+            userName: `User ${i+1}`,
+            data: {}
+        };
+    });
     return mocks;
 }
 
