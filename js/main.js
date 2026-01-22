@@ -455,7 +455,7 @@ function renderDataAccessDashboard() {
 
             <div class="flex flex-col gap-2 text-xs mt-auto relative z-10 pointer-events-none">
                 <!-- Group 1: Device Status -->
-                <div class="bg-gray-50 rounded-lg p-2 border border-gray-200 grid grid-cols-3 gap-2 group-hover:border-gray-300 transition-colors">
+                <div class="bg-gray-50 rounded-lg p-2 border border-gray-200 grid grid-cols-4 gap-2 group-hover:border-gray-300 transition-colors">
                     <!-- DERs Total -->
                     <div class="flex flex-col items-center justify-center gap-1 text-center">
                         <span class="text-gray-500 text-[10px] scale-90">DERs</span>
@@ -470,6 +470,11 @@ function renderDataAccessDashboard() {
                     <div class="flex flex-col items-center justify-center gap-1 text-center border-l border-gray-200">
                         <span class="text-gray-500 text-[10px] scale-90">Offline</span>
                         <span class="font-mono font-medium text-gray-400">${(node.invertersOffline || 0) + (node.batteriesOffline || 0)}</span>
+                    </div>
+                    <!-- Disconnected -->
+                    <div class="flex flex-col items-center justify-center gap-1 text-center border-l border-gray-200">
+                        <span class="text-gray-500 text-[10px] scale-90">Disconnected</span>
+                        <span class="font-mono font-medium text-red-500">${(node.invertersDisconnected || 0) + (node.batteriesDisconnected || 0)}</span>
                     </div>
                 </div>
 
@@ -694,9 +699,9 @@ function renderDeviceTable(list, headers) {
         <table class="w-full text-left text-sm text-gray-600">
             <thead class="bg-gray-100 text-gray-700 font-bold text-xs">
                 <tr>
+                    <th class="px-6 py-3 whitespace-nowrap">Status</th>
                     <th class="px-6 py-3 whitespace-nowrap">SN</th>
                     <th class="px-6 py-3 whitespace-nowrap">Manufacturer</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Status</th>
                     <th class="px-6 py-3 whitespace-nowrap">Rated Power</th>
                     <th class="px-6 py-3 whitespace-nowrap">PV Capacity</th>
                     <th class="px-6 py-3 whitespace-nowrap">SOC</th>
@@ -705,14 +710,14 @@ function renderDeviceTable(list, headers) {
             <tbody class="divide-y divide-gray-100">
                 ${list.map(dev => `
                 <tr class="hover:bg-gray-50 transition-colors border-b border-gray-50">
-                    <td class="px-6 py-4 font-medium text-gray-900 font-mono">${dev.sn}</td>
-                    <td class="px-6 py-4 whitespace-nowrap text-gray-500">${dev.nodeName}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs ${dev.status === 'online' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">
                             <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
                             ${dev.status === 'online' ? 'online' : 'offline'}
                         </span>
                     </td>
+                    <td class="px-6 py-4 font-medium text-gray-900 font-mono">${dev.sn}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-500">${dev.nodeName}</td>
                     <td class="px-6 py-4 whitespace-nowrap font-mono text-gray-500">${dev.ratedPower}</td>
                     <td class="px-6 py-4 whitespace-nowrap font-mono text-gray-500">${dev.pvCapacity}</td>
                     <td class="px-6 py-4 whitespace-nowrap font-mono text-gray-500">
