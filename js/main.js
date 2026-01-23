@@ -482,24 +482,7 @@ function renderDataAccessDashboard() {
                     </div>
                 </div>
 
-                <!-- Group 2: Energy Stats -->
-                <div class="bg-gray-50 rounded-lg p-2 border border-gray-200 grid grid-cols-3 gap-2 group-hover:border-gray-300 transition-colors">
-                    <!-- Inv Power -->
-                    <div class="flex flex-col items-center justify-center gap-1 text-center">
-                        <span class="text-gray-500 text-[10px] scale-90">Rated Power</span>
-                        <span class="font-mono font-medium text-gray-900">${((node.inverters || 0) * 5 + (node.batteries || 0) * 3)} kW</span>
-                    </div>
-                    <!-- PV Capacity -->
-                    <div class="flex flex-col items-center justify-center gap-1 text-center border-l border-gray-200">
-                        <span class="text-gray-500 text-[10px] scale-90">PV Capacity</span>
-                        <span class="font-mono font-medium text-gray-900">${(node.inverters || 0) * 6.5} kW</span>
-                    </div>
-                    <!-- SOC -->
-                    <div class="flex flex-col items-center justify-center gap-1 text-center border-l border-gray-200">
-                        <span class="text-gray-500 text-[10px] scale-90">SOC</span>
-                        <span class="font-mono font-medium text-gray-900 text-[10px]">${node.batteries > 0 ? '85%' : '-'}</span>
-                    </div>
-                </div>
+
             </div>
         `;
         grid.appendChild(card);
