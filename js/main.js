@@ -537,32 +537,24 @@ function renderDataAccessDetails(nodeId) {
 
     // Top: Info & Config (Full Width)
     const infoPanel = document.createElement('div');
-    infoPanel.className = 'bg-white border border-gray-200 shadow-sm p-6 rounded-xl grid grid-cols-1 md:grid-cols-2 gap-8';
+    infoPanel.className = 'bg-white border border-gray-200 shadow-sm px-6 py-5 rounded-xl grid grid-cols-4 gap-4';
     
     infoPanel.innerHTML = `
-        <div>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center border-b border-gray-100 pb-2">
-                    <span class="text-gray-500 text-sm">Platform Type</span>
-                    <span class="text-gray-900 font-mono text-sm uppercase">${node.type}</span>
-                </div>
-                <div class="flex justify-between items-center pt-1">
-                    <span class="text-gray-500 text-sm">Manufacturer</span>
-                    <span class="text-gray-900 font-mono text-sm">${node.vendor || 'Unknown'}</span>
-                </div>
-            </div>
+        <div class="flex flex-col gap-1.5 border-r border-gray-100 pr-4">
+            <span class="text-gray-400 text-[11px] font-medium uppercase tracking-widest">Platform Type</span>
+            <span class="text-gray-900 font-mono text-sm font-medium uppercase truncate" title="${node.type}">${node.type}</span>
         </div>
-        <div>
-            <div class="space-y-3">
-                <div class="flex justify-between items-center border-b border-gray-100 pb-2">
-                    <span class="text-gray-500 text-sm">Country</span>
-                    <span class="text-gray-900 font-mono text-sm">${node.country || 'Unknown'}</span>
-                </div>
-                <div class="flex justify-between items-center pt-1">
-                    <span class="text-gray-500 text-sm">Last Sync</span>
-                    <span class="text-gray-900 font-mono text-sm">${new Date().toLocaleString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })}</span>
-                </div>
-            </div>
+        <div class="flex flex-col gap-1.5 border-r border-gray-100 px-4">
+            <span class="text-gray-400 text-[11px] font-medium uppercase tracking-widest">Manufacturer</span>
+            <span class="text-gray-900 font-mono text-sm font-medium truncate" title="${node.vendor || 'Unknown'}">${node.vendor || 'Unknown'}</span>
+        </div>
+        <div class="flex flex-col gap-1.5 border-r border-gray-100 px-4">
+            <span class="text-gray-400 text-[11px] font-medium uppercase tracking-widest">Country</span>
+            <span class="text-gray-900 font-mono text-sm font-medium truncate" title="${node.country || 'Unknown'}">${node.country || 'Unknown'}</span>
+        </div>
+        <div class="flex flex-col gap-1.5 pl-4">
+            <span class="text-gray-400 text-[11px] font-medium uppercase tracking-widest">Last Sync</span>
+            <span class="text-gray-900 font-mono text-sm font-medium truncate">${new Date().toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).replace(',', '')}</span>
         </div>
     `;
 
@@ -689,9 +681,7 @@ function renderDeviceTable(list, headers) {
                     <th class="px-6 py-3 whitespace-nowrap">Status</th>
                     <th class="px-6 py-3 whitespace-nowrap">SN</th>
                     <th class="px-6 py-3 whitespace-nowrap">Manufacturer</th>
-                    <th class="px-6 py-3 whitespace-nowrap">Rated Power</th>
-                    <th class="px-6 py-3 whitespace-nowrap">PV Capacity</th>
-                    <th class="px-6 py-3 whitespace-nowrap">SOC</th>
+                    <th class="px-6 py-3 whitespace-nowrap">State</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -705,16 +695,7 @@ function renderDeviceTable(list, headers) {
                     </td>
                     <td class="px-6 py-4 font-medium text-gray-900 font-mono">${dev.sn}</td>
                     <td class="px-6 py-4 whitespace-nowrap text-gray-500">${dev.nodeName}</td>
-                    <td class="px-6 py-4 whitespace-nowrap font-mono text-gray-500">${dev.ratedPower}</td>
-                    <td class="px-6 py-4 whitespace-nowrap font-mono text-gray-500">${dev.pvCapacity}</td>
-                    <td class="px-6 py-4 whitespace-nowrap font-mono text-gray-500">
-                        ${dev.soc ? `
-                        <div>
-                            <div class="text-gray-900">${dev.soc.pct}%</div>
-                            <div class="text-[10px] text-gray-500">${dev.soc.text}</div>
-                        </div>
-                        ` : '-'}
-                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-gray-500">Wait</td>
                 </tr>
                 `).join('')}
             </tbody>
