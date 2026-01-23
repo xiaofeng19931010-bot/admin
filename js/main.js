@@ -439,6 +439,9 @@ function renderDataAccessDashboard() {
         card.className = 'bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:border-manta-primary transition-colors group relative overflow-hidden cursor-pointer';
         card.onclick = () => renderDataAccessDetails(node.id);
         
+        // Mock Last Sync Time (randomly within last 10 mins)
+        const lastSyncTime = new Date(Date.now() - Math.floor(Math.random() * 600000)).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }).replace(',', '');
+
         card.innerHTML = `
             <div class="flex justify-between items-start mb-4 relative z-10 pointer-events-none">
                 <div class="flex items-center gap-3">
@@ -450,6 +453,9 @@ function renderDataAccessDashboard() {
                             </span>
                         </div>
                     </div>
+                </div>
+                <div class="flex flex-col items-end">
+                    <span class="text-[10px] font-mono font-medium text-gray-600 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-200">${lastSyncTime}</span>
                 </div>
             </div>
 
