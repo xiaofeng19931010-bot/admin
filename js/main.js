@@ -447,14 +447,12 @@ function renderDataAccessDashboard() {
                 <div class="flex items-center gap-3">
                     <div class="flex-1 min-w-0">
                         <h3 class="font-semibold text-lg text-gray-900 leading-tight truncate" title="${nodeTitle}">${nodeTitle}</h3>
-                        <div class="flex items-center gap-2 mt-1">
-                             <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200">
-                                <i class="fas fa-globe text-gray-400 text-[10px]"></i> ${node.country || 'Unknown'}
-                            </span>
-                        </div>
                     </div>
                 </div>
-                <div class="flex flex-col items-end">
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600 border border-gray-200">
+                        <i class="fas fa-globe text-gray-400 text-[10px]"></i> ${node.country || 'Unknown'}
+                    </span>
                     <span class="text-[10px] font-mono font-medium text-gray-600 bg-gray-50 px-1.5 py-0.5 rounded border border-gray-200">${lastSyncTime}</span>
                 </div>
             </div>
